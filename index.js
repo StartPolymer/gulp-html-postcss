@@ -42,7 +42,7 @@ module.exports = function (processors, options) {
     }
 
     var $ = cheerio.load(file.contents)
-    $('style').contents().each(function(index, style) {
+    $('poststyle').contents().each(function(index, style) {
       postcss(processors)
         .process(style.data, opts)
         .then(handleResult, handleError)
@@ -66,8 +66,8 @@ module.exports = function (processors, options) {
           gutil.log('gulp-postcss:', file.relative + '\n' + warnings)
         }
 
-        style.data = file.contents.toString('utf-8')
-        file.contents = new Buffer($.html())
+        $('style').text(file.contents.toString('utf-8'));
+        file.contents = new Buffer($.html());
       }
 
       function handleError (error) {
