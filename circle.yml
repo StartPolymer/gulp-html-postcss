@@ -1,0 +1,6 @@
+dependencies:
+  pre:
+    - npm i npm@latest -g
+test:
+  post:
+    - npm run coveralls
