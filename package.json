@@ -13,7 +13,7 @@
     "all": true,
     "check-coverage": true
   },
-  "version": "7.0.3",
+  "version": "7.0.4",
   "description": "Process inline CSS in HTML using PostCSS gulp plugin",
   "main": "lib/index.js",
   "scripts": {
@@ -44,8 +44,8 @@
   "homepage": "https://github.com/StartPolymer/gulp-html-postcss",
   "dependencies": {
     "bufferstreams": "^1.1.3",
-    "plugin-error": "^0.1.2",
-    "postcss-html": "^0.12.0",
+    "plugin-error": "^1.0.1",
+    "postcss-html": "^0.15.0",
     "postcss-load-config": "^1.2.0",
     "postcss-load-options": "^1.2.0",
     "postcss-load-plugins": "^2.3.0",
@@ -56,21 +56,21 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "eslint": "^4.14.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
+    "eslint": "^4.18.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
     "from2-array": "0.0.4",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^2.6.2",
-    "mocha": "^4.1.0",
-    "nyc": "^11.4.1",
-    "postcss": "^6.0.15",
+    "gulp-sourcemaps": "^2.6.4",
+    "mocha": "^5.0.4",
+    "nyc": "^11.6.0",
+    "postcss": "^6.0.19",
     "postcss-less": "^1.1.3",
-    "proxyquire": "^1.8.0",
-    "sinon": "^4.1.3",
+    "proxyquire": "^2.0.0",
+    "sinon": "^4.4.5",
     "vinyl": "^2.1.0"
   }
 }

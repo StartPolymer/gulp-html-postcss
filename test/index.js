@@ -254,9 +254,9 @@ describe('PostCSS Guidelines', function () {
 
 		rename.pipe(stream);
 
-		stream.on('data', function () {
-			assert.equal(postcssStub.process.getCall(0).args[1].to, cssPath);
-			assert.equal(postcssStub.process.getCall(0).args[1].from, mdPath);
+		stream.on('data', function (file) {
+			assert.equal(file.postcss.opts.to, cssPath);
+			assert.equal(file.postcss.opts.from, mdPath);
 			cb();
 		});
 
