@@ -1,6 +1,7 @@
 {
   "parserOptions": {
-    "sourceType": "script"
+    "sourceType": "script",
+    "impliedStrict": false
   },
   "env": {
     "es6": true,
@@ -11,10 +12,6 @@
   ],
   "root": true,
   "rules": {
-    "arrow-spacing": [
-      "error"
-    ],
-    "block-spacing": "error",
     "comma-dangle": [
       "error",
       "always-multiline"
@@ -27,10 +24,6 @@
         "before": false
       }
     ],
-    "eqeqeq": [
-      "error",
-      "smart"
-    ],
     "indent": [
       "error",
       "tab",
@@ -38,38 +31,42 @@
         "SwitchCase": 1
       }
     ],
-    "key-spacing": [
+    "no-tabs": [
+      "off"
+    ],
+    "no-var": [
       "error"
     ],
-    "keyword-spacing": [
+    "prefer-arrow-callback": [
       "error"
     ],
-    "max-len": [
-      "error",
-      {
-        "code": 100,
-        "ignoreComments": true
-      }
+    "prefer-const": [
+      "error"
     ],
-    "new-cap": "error",
-    "no-cond-assign": "error",
-    "no-multi-spaces": "error",
-    "no-tabs": "off",
-    "no-trailing-spaces": "error",
-    "no-undef": "error",
-    "no-unused-expressions": "error",
-    "no-unused-vars": "error",
-    "no-var": "error",
-    "prefer-const": "error",
     "quotes": [
       "error",
       "single"
     ],
     "semi": [
       "error",
-      "always"
+      "always",
+      {
+        "omitLastInOneLineBlock": false
+      }
     ],
-    "spaced-comment": "error",
-    "strict": "error"
-  }
+    "strict": [
+      "error",
+      "safe"
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "test/**/*"
+      ],
+      "env": {
+        "mocha": true
+      }
+    }
+  ]
 }

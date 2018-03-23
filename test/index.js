@@ -1,5 +1,4 @@
 'use strict';
-/* eslint-env node, mocha */
 /* eslint max-len: ["off"] */
 
 const assert = require('assert');
@@ -12,11 +11,11 @@ const sinon = require('sinon');
 const path = require('path');
 const from = require('from2-array');
 
-it('should pass file when it isNull()', function (cb) {
+it('should pass file when it isNull()', (cb) => {
 	const stream = postcss([ doubler ]);
 	const emptyFile = new Vinyl();
 
-	stream.once('data', function (data) {
+	stream.once('data', (data) => {
 		assert.equal(data, emptyFile);
 		cb();
 	});
@@ -26,12 +25,12 @@ it('should pass file when it isNull()', function (cb) {
 	stream.end();
 });
 
-it('should transform css with multiple processors', function (cb) {
+it('should transform css with multiple processors', (cb) => {
 	const stream = postcss(
 		[ asyncDoubler, objectDoubler() ]
 	);
 
-	stream.on('data', function (file) {
+	stream.on('data', (file) => {
 		const result = file.contents.toString('utf8');
 		const target = 'a { color: black; color: black; color: black; color: black }';
 		assert.equal(result, target);
@@ -45,10 +44,10 @@ it('should transform css with multiple processors', function (cb) {
 	stream.end();
 });
 
-it('should correctly wrap postcss errors', function (cb) {
+it('should correctly wrap postcss errors', (cb) => {
 	const stream = postcss([ doubler ]);
 
-	stream.on('error', function (err) {
+	stream.on('error', (err) => {
 		assert.ok(err instanceof PluginError);
 		assert.equal(err.plugin, 'gulp-postcss');
 		assert.equal(err.column, 1);
@@ -69,10 +68,10 @@ it('should correctly wrap postcss errors', function (cb) {
 	stream.end();
 });
 
-it('should transform css on stream files', function (cb) {
+it('should transform css on stream files', (cb) => {
 	const stream = postcss([ doubler ]);
 
-	stream.on('data', function (file) {
+	stream.on('data', (file) => {
 		assert.equal(file.postcss.content, '.from {}');
 		cb();
 	});
@@ -87,7 +86,7 @@ it('should transform css on stream files', function (cb) {
 	stream.end();
 });
 
-it('should generate source maps', function (cb) {
+it('should generate source maps', (cb) => {
 	const init = sourceMaps.init();
 	const write = sourceMaps.write();
 	const css = postcss(
@@ -98,7 +97,7 @@ it('should generate source maps', function (cb) {
 		.pipe(css)
 		.pipe(write);
 
-	write.on('data', function (file) {
+	write.on('data', (file) => {
 		assert.equal(file.sourceMap.mappings, 'AAAA,IAAI,aAAY,CAAZ,aAAY,CAAZ,aAAY,CAAZ,YAAY,EAAE');
 		assert(/sourceMappingURL=data:application\/json;(?:charset=\w+;)?base64/.test(file.contents.toString()));
 		cb();
@@ -113,7 +112,7 @@ it('should generate source maps', function (cb) {
 	init.end();
 });
 
-it('should correctly generate relative source map', function (cb) {
+it('should correctly generate relative source map', (cb) => {
 	const init = sourceMaps.init();
 	const css = postcss(
 		[ doubler, doubler ]
@@ -121,7 +120,7 @@ it('should correctly generate relative source map', function (cb) {
 
 	init.pipe(css);
 
-	css.on('data', function (file) {
+	css.on('data', (file) => {
 		assert.equal(file.sourceMap.file, 'fixture.css');
 		assert.deepEqual(file.sourceMap.sources, ['fixture.css']);
 		cb();
@@ -136,8 +135,8 @@ it('should correctly generate relative source map', function (cb) {
 	init.end();
 });
 
-describe('PostCSS Syntax Infer', function () {
-	it('should parse less file with out syntax config', function (cb) {
+describe('PostCSS Syntax Infer', () => {
+	it('should parse less file with out syntax config', (cb) => {
 		const stream = postcss([doubler]);
 		const less = [
 			'@base: #f938ab;',
@@ -147,7 +146,7 @@ describe('PostCSS Syntax Infer', function () {
 		];
 
 		stream.on('error', cb);
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			assert.equal(file.contents.toString(), [
 				less[0],
 				less[0],
@@ -168,10 +167,10 @@ describe('PostCSS Syntax Infer', function () {
 		stream.end();
 	});
 
-	it('should show error for `MODULE_NOT_FOUND`', function (cb) {
+	it('should show error for `MODULE_NOT_FOUND`', (cb) => {
 		const stream = postcss([doubler]);
 
-		stream.on('error', function (error) {
+		stream.on('error', (error) => {
 			assert.equal(error.code, 'MODULE_NOT_FOUND');
 			assert.equal(error.message, 'Cannot find module \'postcss-sass\'');
 			cb();
@@ -187,7 +186,7 @@ describe('PostCSS Syntax Infer', function () {
 	});
 });
 
-describe('PostCSS Guidelines', function () {
+describe('PostCSS Guidelines', () => {
 	const sandbox = sinon.sandbox.create();
 	const CssSyntaxError = function (message, source) {
 		this.name = 'CssSyntaxError';
@@ -228,17 +227,17 @@ describe('PostCSS Guidelines', function () {
 		}),
 	});
 
-	beforeEach(function () {
+	beforeEach(() => {
 		postcssLoadConfigStub = sandbox.stub();
 		sandbox.stub(postcssStub, 'use');
 		sandbox.stub(postcssStub, 'process');
 	});
 
-	afterEach(function () {
+	afterEach(() => {
 		sandbox.restore();
 	});
 
-	it('should set `from` and `to` processing options to `file.path`', function (cb) {
+	it('should set `from` and `to` processing options to `file.path`', (cb) => {
 		const rename = require('gulp-rename')({
 			extname: '.css',
 		});
@@ -254,7 +253,7 @@ describe('PostCSS Guidelines', function () {
 
 		rename.pipe(stream);
 
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			assert.equal(file.postcss.opts.to, cssPath);
 			assert.equal(file.postcss.opts.from, mdPath);
 			cb();
@@ -268,7 +267,7 @@ describe('PostCSS Guidelines', function () {
 		rename.end();
 	});
 
-	it('should allow override of `to` processing option', function (cb) {
+	it('should allow override of `to` processing option', (cb) => {
 		const stream = postcss({
 			plugin: [ doubler ],
 			to: 'overriden',
@@ -280,7 +279,7 @@ describe('PostCSS Guidelines', function () {
 			},
 		}));
 
-		stream.on('data', function () {
+		stream.on('data', () => {
 			assert.equal(postcssStub.process.getCall(0).args[1].to, 'overriden');
 			cb();
 		});
@@ -292,7 +291,7 @@ describe('PostCSS Guidelines', function () {
 		stream.end();
 	});
 
-	it('should take plugins and options from callback', function (cb) {
+	it('should take plugins and options from callback', (cb) => {
 		const cssPath = path.join(__dirname, 'fixture.css');
 		const file = new Vinyl({
 			contents: Buffer.from('a {}'),
@@ -312,7 +311,7 @@ describe('PostCSS Guidelines', function () {
 			},
 		}));
 
-		stream.on('data', function () {
+		stream.on('data', () => {
 			try {
 				assert.deepEqual(callback.getCall(0).args[0], {
 					cwd: process.cwd(),
@@ -333,7 +332,7 @@ describe('PostCSS Guidelines', function () {
 		stream.end(file);
 	});
 
-	it('should take plugins and options from postcss-load-config', function (cb) {
+	it('should take plugins and options from postcss-load-config', (cb) => {
 		const cssPath = path.join(__dirname, 'fixture.css');
 		const file = new Vinyl({
 			contents: Buffer.from('a {}'),
@@ -354,7 +353,7 @@ describe('PostCSS Guidelines', function () {
 			},
 		}));
 
-		stream.on('data', function () {
+		stream.on('data', () => {
 			assert.deepEqual(postcssLoadConfigStub.getCall(0).args[0], {
 				cwd: process.cwd(),
 				from: cssPath,
@@ -370,7 +369,7 @@ describe('PostCSS Guidelines', function () {
 		stream.end(file);
 	});
 
-	it('should point the config location to file directory', function (cb) {
+	it('should point the config location to file directory', (cb) => {
 		const cssPath = path.join(__dirname, '/fixture.css');
 		const stream = postcss();
 		postcssLoadConfigStub.returns(Promise.resolve({ plugins: [] }));
@@ -380,7 +379,7 @@ describe('PostCSS Guidelines', function () {
 				return [];
 			},
 		}));
-		stream.on('data', function () {
+		stream.on('data', () => {
 			assert.deepEqual(postcssLoadConfigStub.getCall(0).args[1], cssPath);
 			cb();
 		});
@@ -390,7 +389,7 @@ describe('PostCSS Guidelines', function () {
 		}));
 	});
 
-	it('should set the config location from `file.path', function (cb) {
+	it('should set the config location from `file.path', (cb) => {
 		const cssPath = path.join(__dirname, 'fixture.css');
 		const stream = postcss();
 		postcssLoadConfigStub.returns(Promise.resolve({ plugins: [] }));
@@ -400,7 +399,7 @@ describe('PostCSS Guidelines', function () {
 				return [];
 			},
 		}));
-		stream.on('data', function () {
+		stream.on('data', () => {
 			assert.deepEqual(postcssLoadConfigStub.getCall(0).args[1], cssPath);
 			cb();
 		});
@@ -410,7 +409,7 @@ describe('PostCSS Guidelines', function () {
 		}));
 	});
 
-	it('should not override `from` and `map` if using gulp-sourcemaps', function (cb) {
+	it('should not override `from` and `map` if using gulp-sourcemaps', (cb) => {
 		const stream = postcss([ doubler ], { from: 'overriden', map: 'overriden' });
 		const cssPath = path.join(__dirname, 'fixture.css');
 		postcssStub.process.returns(Promise.resolve({
@@ -430,7 +429,7 @@ describe('PostCSS Guidelines', function () {
 
 		// sandbox.stub(gutil, 'log');
 
-		stream.on('data', function () {
+		stream.on('data', () => {
 			try {
 				assert.deepEqual(postcssStub.process.getCall(0).args[1].from, cssPath);
 				assert.deepEqual(postcssStub.process.getCall(0).args[1].map, { annotation: false });
@@ -449,12 +448,12 @@ describe('PostCSS Guidelines', function () {
 		stream.end(file);
 	});
 
-	it('should not output js stack trace for `CssSyntaxError`', function (cb) {
+	it('should not output js stack trace for `CssSyntaxError`', (cb) => {
 		const stream = postcss([ doubler ]);
 		const cssSyntaxError = new CssSyntaxError('messageText', 'sourceCode');
 		postcssStub.process.returns(Promise.reject(cssSyntaxError));
 
-		stream.on('error', function (error) {
+		stream.on('error', (error) => {
 			assert.equal(error.showStack, false);
 			assert.equal(error.message, 'messageText\n\nsourceCode\n');
 			assert.equal(error.source, 'sourceCode');
@@ -468,7 +467,7 @@ describe('PostCSS Guidelines', function () {
 		stream.end();
 	});
 
-	it('should get `result.warnings()` content', function (cb) {
+	it('should get `result.warnings()` content', (cb) => {
 		const stream = postcss([ doubler ]);
 		const cssPath = path.join(__dirname, 'src/fixture.css');
 		function Warning (msg) {
@@ -485,7 +484,7 @@ describe('PostCSS Guidelines', function () {
 			},
 		}));
 
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			const warnings = file.postcss.warnings();
 			assert.equal(warnings[0].toString(), 'msg1');
 			assert.equal(warnings[1].toString(), 'msg2');
@@ -501,8 +500,8 @@ describe('PostCSS Guidelines', function () {
 	});
 });
 
-describe('<style> tag', function () {
-	it('LESS in HTML', function (cb) {
+describe('<style> tag', () => {
+	it('LESS in HTML', (cb) => {
 		function createHtml (css) {
 			return '<html><head><style type="text/less">' + css + '</style></head></html>';
 		}
@@ -511,7 +510,7 @@ describe('<style> tag', function () {
 			[ asyncDoubler, objectDoubler() ]
 		);
 
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			const target = createHtml('a { color: black; color: black; color: black; color: black }');
 			assert.equal(result, target);
@@ -526,14 +525,14 @@ describe('<style> tag', function () {
 		stream.end();
 	});
 
-	it('HTML without <style> tag', function (cb) {
+	it('HTML without <style> tag', (cb) => {
 		const html = '<html><body></body></html>';
 
 		const stream = postcss(
 			[ asyncDoubler, objectDoubler() ]
 		);
 
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			try {
 				assert.equal(result, html);
@@ -551,7 +550,7 @@ describe('<style> tag', function () {
 		stream.end();
 	});
 
-	it('remove nodes from root', function (cb) {
+	it('remove nodes from root', (cb) => {
 		function createHtml (css) {
 			return '<html><head><style>' + css + '</style></head></html>';
 		}
@@ -562,7 +561,7 @@ describe('<style> tag', function () {
 			},
 		]);
 
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			const target = createHtml('');
 			assert.equal(result, target);
@@ -577,7 +576,7 @@ describe('<style> tag', function () {
 		stream.end();
 	});
 
-	it('vue component', function (cb) {
+	it('vue component', (cb) => {
 		function createVue (css) {
 			return '<style lang="less">' + css + '</style>';
 		}
@@ -586,7 +585,7 @@ describe('<style> tag', function () {
 			[ asyncDoubler, objectDoubler() ]
 		);
 
-		stream.on('data', function (file) {
+		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			const target = createVue('a { color: black; color: black; color: black; color: black }');
 			assert.equal(result, target);
@@ -603,14 +602,14 @@ describe('<style> tag', function () {
 });
 
 function doubler (css) {
-	css.walkDecls(function (decl) {
+	css.walkDecls((decl) => {
 		decl.parent.prepend(decl.clone());
 	});
 }
 
 function asyncDoubler (css) {
-	return new Promise(function (resolve) {
-		setTimeout(function () {
+	return new Promise((resolve) => {
+		setTimeout(() => {
 			doubler(css);
 			resolve();
 		});
