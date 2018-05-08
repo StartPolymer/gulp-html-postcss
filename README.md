@@ -4,9 +4,12 @@
 [![Build Status](https://img.shields.io/travis/StartPolymer/gulp-html-postcss.png)](https://travis-ci.org/StartPolymer/gulp-html-postcss)
 [![Coverage Status](https://img.shields.io/coveralls/StartPolymer/gulp-html-postcss.png)](https://coveralls.io/r/StartPolymer/gulp-html-postcss)
 
-[PostCSS](https://github.com/postcss/postcss) gulp plugin to pipe inline CSS in HTML within the `<style>` tags through
-several plugins, but parse CSS only once.
-
+[PostCSS](https://github.com/postcss/postcss) gulp plugin with support for HTML and HTML-like:
+- [JSX](https://reactjs.org/docs/introducing-jsx.html)
+- [Vue component](https://vue-loader.vuejs.org/)
+- [Quick App](https://doc.quickapp.cn/framework/source-file.html)
+- [Markdown](https://daringfireball.net/projects/markdown/syntax)
+ 
 ## Install
 
     $ npm install --save-dev gulp-html-postcss

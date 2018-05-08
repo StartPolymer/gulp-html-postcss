@@ -10,6 +10,7 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const path = require('path');
 const from = require('from2-array');
+const syntax = require('postcss-syntax');
 
 it('should pass file when it isNull()', (cb) => {
 	const stream = postcss([ doubler ]);
@@ -167,13 +168,27 @@ describe('PostCSS Syntax Infer', () => {
 		stream.end();
 	});
 
-	it('should show error for `MODULE_NOT_FOUND`', (cb) => {
-		const stream = postcss([doubler]);
+	it('should catch error from parser', (cb) => {
+		const stream = postcss({
+			syntax: {
+				parse: () => {
+					throw new Error('mock syntax error');
+				},
+			},
+			plugins: [
+				doubler,
+			],
+		});
 
 		stream.on('error', (error) => {
-			assert.equal(error.code, 'MODULE_NOT_FOUND');
-			assert.equal(error.message, 'Cannot find module \'postcss-sass\'');
-			cb();
+			try {
+				assert.equal(error.message, 'mock syntax error');
+				assert.ifError(error.lineNumber);
+				assert.ok(error.showStack);
+				cb();
+			} catch (ex) {
+				cb(ex);
+			}
 		});
 
 		stream.write(new Vinyl({
@@ -254,9 +269,14 @@ describe('PostCSS Guidelines', () => {
 		rename.pipe(stream);
 
 		stream.on('data', (file) => {
-			assert.equal(file.postcss.opts.to, cssPath);
-			assert.equal(file.postcss.opts.from, mdPath);
-			cb();
+			const opts = postcssStub.process.getCall(0).args[1];
+			try {
+				assert.equal(opts.to, cssPath);
+				assert.equal(opts.from, mdPath);
+				cb();
+			} catch (ex) {
+				cb(ex);
+			}
 		});
 
 		rename.write(new Vinyl({
@@ -315,6 +335,7 @@ describe('PostCSS Guidelines', () => {
 			try {
 				assert.deepEqual(callback.getCall(0).args[0], {
 					cwd: process.cwd(),
+					syntax: syntax,
 					from: cssPath,
 					file: file,
 					map: false,
@@ -354,16 +375,21 @@ describe('PostCSS Guidelines', () => {
 		}));
 
 		stream.on('data', () => {
-			assert.deepEqual(postcssLoadConfigStub.getCall(0).args[0], {
-				cwd: process.cwd(),
-				from: cssPath,
-				file: file,
-				map: false,
-				to: cssPath,
-			});
-			assert.equal(postcssStub.use.getCall(0).args[0], plugins);
-			assert.equal(postcssStub.process.getCall(0).args[1].to, 'overriden');
-			cb();
+			try {
+				assert.deepEqual(postcssLoadConfigStub.getCall(0).args[0], {
+					cwd: process.cwd(),
+					syntax: syntax,
+					from: cssPath,
+					file: file,
+					map: false,
+					to: cssPath,
+				});
+				assert.equal(postcssStub.use.getCall(0).args[0], plugins);
+				assert.equal(postcssStub.process.getCall(0).args[1].to, 'overriden');
+				cb();
+			} catch (ex) {
+				cb(ex);
+			}
 		});
 
 		stream.end(file);
@@ -519,6 +545,7 @@ describe('<style> tag', () => {
 
 		stream.write(new Vinyl({
 			contents: Buffer.from(createHtml('a { color: black }')),
+			path: '/test/fixture_style_tag.html',
 		}));
 
 		stream.on('error', cb);
@@ -544,6 +571,7 @@ describe('<style> tag', () => {
 
 		stream.write(new Vinyl({
 			contents: Buffer.from(html),
+			path: '/test/fixture_without_style_tag.html',
 		}));
 
 		stream.on('error', cb);
@@ -570,6 +598,7 @@ describe('<style> tag', () => {
 
 		stream.write(new Vinyl({
 			contents: Buffer.from(createHtml('a { color: black }')),
+			path: '/test/fixture_remove_nodes.html',
 		}));
 
 		stream.on('error', cb);
@@ -594,6 +623,7 @@ describe('<style> tag', () => {
 
 		stream.write(new Vinyl({
 			contents: Buffer.from(createVue('a { color: black }')),
+			path: '/test/fixture.vue',
 		}));
 
 		stream.on('error', cb);
