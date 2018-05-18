@@ -6,7 +6,7 @@
 
 [PostCSS](https://github.com/postcss/postcss) gulp plugin with support for HTML and HTML-like:
 - [JSX](https://reactjs.org/docs/introducing-jsx.html)
-- [Vue component](https://vue-loader.vuejs.org/)
+- [Vue Single-File Component](https://vue-loader.vuejs.org/spec.html)
 - [Quick App](https://doc.quickapp.cn/framework/source-file.html)
 - [Markdown](https://daringfireball.net/projects/markdown/syntax)
  
