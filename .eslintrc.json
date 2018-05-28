@@ -14,14 +14,12 @@
   "rules": {
     "comma-dangle": [
       "error",
-      "always-multiline"
-    ],
-    "comma-style": "error",
-    "comma-spacing": [
-      "error",
       {
-        "after": true,
-        "before": false
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
       }
     ],
     "indent": [
@@ -62,10 +60,23 @@
   "overrides": [
     {
       "files": [
-        "test/**/*"
+        "**/*.mjs",
+        "**/*.jsx"
+      ],
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    },
+    {
+      "files": [
+        "**/test/**/*"
       ],
       "env": {
         "mocha": true
+      },
+      "rules": {
+        "no-unused-expressions": "off",
+        "no-template-curly-in-string": "off"
       }
     }
   ]
