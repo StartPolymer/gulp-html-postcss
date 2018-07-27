@@ -17,7 +17,7 @@ it('should pass file when it isNull()', (cb) => {
 	const emptyFile = new Vinyl();
 
 	stream.once('data', (data) => {
-		assert.equal(data, emptyFile);
+		assert.strictEqual(data, emptyFile);
 		cb();
 	});
 
@@ -34,7 +34,7 @@ it('should transform css with multiple processors', (cb) => {
 	stream.on('data', (file) => {
 		const result = file.contents.toString('utf8');
 		const target = 'a { color: black; color: black; color: black; color: black }';
-		assert.equal(result, target);
+		assert.strictEqual(result, target);
 		cb();
 	});
 
@@ -50,14 +50,14 @@ it('should correctly wrap postcss errors', (cb) => {
 
 	stream.on('error', (err) => {
 		assert.ok(err instanceof PluginError);
-		assert.equal(err.plugin, 'gulp-postcss');
-		assert.equal(err.column, 1);
-		assert.equal(err.lineNumber, 1);
-		assert.equal(err.name, 'CssSyntaxError');
-		assert.equal(err.reason, 'Unclosed block');
-		assert.equal(err.showStack, false);
-		assert.equal(err.source, 'a {');
-		assert.equal(err.fileName, path.resolve('testpath'));
+		assert.strictEqual(err.plugin, 'gulp-postcss');
+		assert.strictEqual(err.column, 1);
+		assert.strictEqual(err.lineNumber, 1);
+		assert.strictEqual(err.name, 'CssSyntaxError');
+		assert.strictEqual(err.reason, 'Unclosed block');
+		assert.strictEqual(err.showStack, false);
+		assert.strictEqual(err.source, 'a {');
+		assert.strictEqual(err.fileName, path.resolve('testpath'));
 		cb();
 	});
 
@@ -73,7 +73,7 @@ it('should transform css on stream files', (cb) => {
 	const stream = postcss([ doubler ]);
 
 	stream.on('data', (file) => {
-		assert.equal(file.postcss.content, '.from {}');
+		assert.strictEqual(file.postcss.content, '.from {}');
 		cb();
 	});
 
@@ -99,7 +99,7 @@ it('should generate source maps', (cb) => {
 		.pipe(write);
 
 	write.on('data', (file) => {
-		assert.equal(file.sourceMap.mappings, 'AAAA,IAAI,aAAY,CAAZ,aAAY,CAAZ,aAAY,CAAZ,YAAY,EAAE');
+		assert.strictEqual(file.sourceMap.mappings, 'AAAA,IAAI,aAAY,CAAZ,aAAY,CAAZ,aAAY,CAAZ,YAAY,EAAE');
 		assert(/sourceMappingURL=data:application\/json;(?:charset=\w+;)?base64/.test(file.contents.toString()));
 		cb();
 	});
@@ -122,8 +122,8 @@ it('should correctly generate relative source map', (cb) => {
 	init.pipe(css);
 
 	css.on('data', (file) => {
-		assert.equal(file.sourceMap.file, 'fixture.css');
-		assert.deepEqual(file.sourceMap.sources, ['fixture.css']);
+		assert.strictEqual(file.sourceMap.file, 'fixture.css');
+		assert.deepStrictEqual(file.sourceMap.sources, ['fixture.css']);
 		cb();
 	});
 
@@ -148,7 +148,7 @@ describe('PostCSS Syntax Infer', () => {
 
 		stream.on('error', cb);
 		stream.on('data', (file) => {
-			assert.equal(file.contents.toString(), [
+			assert.strictEqual(file.contents.toString(), [
 				less[0],
 				less[0],
 				less[1],
@@ -182,7 +182,7 @@ describe('PostCSS Syntax Infer', () => {
 
 		stream.on('error', (error) => {
 			try {
-				assert.equal(error.message, 'mock syntax error');
+				assert.strictEqual(error.message, 'mock syntax error');
 				assert.ifError(error.lineNumber);
 				assert.ok(error.showStack);
 				cb();
@@ -271,8 +271,8 @@ describe('PostCSS Guidelines', () => {
 		stream.on('data', (file) => {
 			const opts = postcssStub.process.getCall(0).args[1];
 			try {
-				assert.equal(opts.to, cssPath);
-				assert.equal(opts.from, mdPath);
+				assert.strictEqual(opts.to, cssPath);
+				assert.strictEqual(opts.from, mdPath);
 				cb();
 			} catch (ex) {
 				cb(ex);
@@ -300,7 +300,7 @@ describe('PostCSS Guidelines', () => {
 		}));
 
 		stream.on('data', () => {
-			assert.equal(postcssStub.process.getCall(0).args[1].to, 'overriden');
+			assert.strictEqual(postcssStub.process.getCall(0).args[1].to, 'overriden');
 			cb();
 		});
 
@@ -333,7 +333,7 @@ describe('PostCSS Guidelines', () => {
 
 		stream.on('data', () => {
 			try {
-				assert.deepEqual(callback.getCall(0).args[0], {
+				assert.deepStrictEqual(callback.getCall(0).args[0], {
 					cwd: process.cwd(),
 					syntax: syntax,
 					from: cssPath,
@@ -341,8 +341,8 @@ describe('PostCSS Guidelines', () => {
 					map: false,
 					to: 'overriden',
 				});
-				assert.deepEqual(postcssStub.use.getCall(0).args[0], plugins);
-				assert.equal(postcssStub.process.getCall(0).args[1].to, 'overriden');
+				assert.deepStrictEqual(postcssStub.use.getCall(0).args[0], plugins);
+				assert.strictEqual(postcssStub.process.getCall(0).args[1].to, 'overriden');
 				cb();
 			} catch (ex) {
 				cb(ex);
@@ -376,7 +376,7 @@ describe('PostCSS Guidelines', () => {
 
 		stream.on('data', () => {
 			try {
-				assert.deepEqual(postcssLoadConfigStub.getCall(0).args[0], {
+				assert.deepStrictEqual(postcssLoadConfigStub.getCall(0).args[0], {
 					cwd: process.cwd(),
 					syntax: syntax,
 					from: cssPath,
@@ -384,8 +384,8 @@ describe('PostCSS Guidelines', () => {
 					map: false,
 					to: cssPath,
 				});
-				assert.equal(postcssStub.use.getCall(0).args[0], plugins);
-				assert.equal(postcssStub.process.getCall(0).args[1].to, 'overriden');
+				assert.strictEqual(postcssStub.use.getCall(0).args[0], plugins);
+				assert.strictEqual(postcssStub.process.getCall(0).args[1].to, 'overriden');
 				cb();
 			} catch (ex) {
 				cb(ex);
@@ -406,7 +406,7 @@ describe('PostCSS Guidelines', () => {
 			},
 		}));
 		stream.on('data', () => {
-			assert.deepEqual(postcssLoadConfigStub.getCall(0).args[1], cssPath);
+			assert.deepStrictEqual(postcssLoadConfigStub.getCall(0).args[1], cssPath);
 			cb();
 		});
 		stream.end(new Vinyl({
@@ -426,7 +426,7 @@ describe('PostCSS Guidelines', () => {
 			},
 		}));
 		stream.on('data', () => {
-			assert.deepEqual(postcssLoadConfigStub.getCall(0).args[1], cssPath);
+			assert.deepStrictEqual(postcssLoadConfigStub.getCall(0).args[1], cssPath);
 			cb();
 		});
 		stream.end(new Vinyl({
@@ -457,8 +457,8 @@ describe('PostCSS Guidelines', () => {
 
 		stream.on('data', () => {
 			try {
-				assert.deepEqual(postcssStub.process.getCall(0).args[1].from, cssPath);
-				assert.deepEqual(postcssStub.process.getCall(0).args[1].map, { annotation: false });
+				assert.deepStrictEqual(postcssStub.process.getCall(0).args[1].from, cssPath);
+				assert.deepStrictEqual(postcssStub.process.getCall(0).args[1].map, { annotation: false });
 			} catch (ex) {
 				cb(ex);
 				return;
@@ -480,9 +480,9 @@ describe('PostCSS Guidelines', () => {
 		postcssStub.process.returns(Promise.reject(cssSyntaxError));
 
 		stream.on('error', (error) => {
-			assert.equal(error.showStack, false);
-			assert.equal(error.message, 'messageText\n\nsourceCode\n');
-			assert.equal(error.source, 'sourceCode');
+			assert.strictEqual(error.showStack, false);
+			assert.strictEqual(error.message, 'messageText\n\nsourceCode\n');
+			assert.strictEqual(error.source, 'sourceCode');
 			cb();
 		});
 
@@ -512,8 +512,8 @@ describe('PostCSS Guidelines', () => {
 
 		stream.on('data', (file) => {
 			const warnings = file.postcss.warnings();
-			assert.equal(warnings[0].toString(), 'msg1');
-			assert.equal(warnings[1].toString(), 'msg2');
+			assert.strictEqual(warnings[0].toString(), 'msg1');
+			assert.strictEqual(warnings[1].toString(), 'msg2');
 			cb();
 		});
 
@@ -539,7 +539,7 @@ describe('<style> tag', () => {
 		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			const target = createHtml('a { color: black; color: black; color: black; color: black }');
-			assert.equal(result, target);
+			assert.strictEqual(result, target);
 			cb();
 		});
 
@@ -562,7 +562,7 @@ describe('<style> tag', () => {
 		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			try {
-				assert.equal(result, html);
+				assert.strictEqual(result, html);
 				cb();
 			} catch (error) {
 				cb(error);
@@ -592,7 +592,7 @@ describe('<style> tag', () => {
 		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			const target = createHtml('');
-			assert.equal(result, target);
+			assert.strictEqual(result, target);
 			cb();
 		});
 
@@ -617,7 +617,7 @@ describe('<style> tag', () => {
 		stream.on('data', (file) => {
 			const result = file.contents.toString('utf8');
 			const target = createVue('a { color: black; color: black; color: black; color: black }');
-			assert.equal(result, target);
+			assert.strictEqual(result, target);
 			cb();
 		});
 
